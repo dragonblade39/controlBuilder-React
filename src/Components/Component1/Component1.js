@@ -1,0 +1,74 @@
+import React, { useEffect, useState } from "react";
+import "./Component1.css";
+import MainContent from "./MainContent";
+
+function Component1() {
+  const [options, setOptions] = useState([]);
+  const [isOptionsVisible, setIsOptionsVisible] = useState(true);
+  const [hoveredOption, setHoveredOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState("Main"); // Default to "Main"
+
+  useEffect(() => {
+    const fetchOptions = async () => {
+      try {
+        const response = await fetch("/OptionsContent.json");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setOptions(data.options || []);
+      } catch (error) {
+        console.error("Error fetching options:", error);
+        setOptions([]);
+      }
+    };
+    fetchOptions();
+  }, []);
+
+  const toggleOptions = () => {
+    setIsOptionsVisible(!isOptionsVisible);
+  };
+
+  const handleOptionClick = (option) => {
+    setSelectedOption(option);
+  };
+
+  return (
+    <div className="container">
+      <button className="toggle-button" onClick={toggleOptions}>
+        {isOptionsVisible ? "▲" : "▼"}
+      </button>
+
+      <div
+        className={`options-container ${isOptionsVisible ? "show" : "hide"}`}
+      >
+        {Array.isArray(options) && options.length > 0 ? (
+          options.map((option, index) => (
+            <button
+              key={index}
+              className={`option-button ${
+                selectedOption === option ? "selected" : ""
+              } ${hoveredOption === option ? "hovered" : ""}`}
+              onMouseEnter={() => setHoveredOption(option)}
+              onMouseLeave={() => setHoveredOption(null)}
+              onClick={() => handleOptionClick(option)}
+            >
+              {option}
+            </button>
+          ))
+        ) : (
+          <p>No options available.</p>
+        )}
+      </div>
+
+      {/* Conditionally render content only if selected option is NOT "Main" */}
+      {selectedOption === "Main" && (
+        <div className="content-container">
+          <MainContent />
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default Component1;
