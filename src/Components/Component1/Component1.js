@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import "./Component1.css";
 import MainContent from "./MainContent";
+
+const API_URL = "http://localhost:5257/api/data"; // Ensure this matches your .NET backend URL
 
 function Component1() {
   const [options, setOptions] = useState([]);
@@ -11,12 +14,8 @@ function Component1() {
   useEffect(() => {
     const fetchOptions = async () => {
       try {
-        const response = await fetch("/OptionsContent.json");
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setOptions(data.options || []);
+        const response = await axios.get(API_URL);
+        setOptions(response.data.options || []);
       } catch (error) {
         console.error("Error fetching options:", error);
         setOptions([]);
@@ -42,7 +41,7 @@ function Component1() {
       <div
         className={`options-container ${isOptionsVisible ? "show" : "hide"}`}
       >
-        {Array.isArray(options) && options.length > 0 ? (
+        {options.length > 0 ? (
           options.map((option, index) => (
             <button
               key={index}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
 import "./TreeView.css";
-import data from "../TreeViewContent.json";
 import "bootstrap-icons/font/bootstrap-icons.css";
 /* eslint-disable react/jsx-pascal-case */
 import Component1 from "../Component1/Component1";
@@ -9,27 +9,28 @@ import Component3 from "../Component3/Component3";
 import Component4 from "../Component4/Component4";
 /* eslint-enable react/jsx-pascal-case */
 
+const API_URL = "http://localhost:5257/api/data"; // Ensure correct backend URL
+
 const TreeView = () => {
   const [treeData, setTreeData] = useState([]);
   const [expandedNodes, setExpandedNodes] = useState({});
   const [selectedNode, setSelectedNode] = useState(null);
   const [isNavbarOpen, setIsNavbarOpen] = useState(window.innerWidth > 425);
-
   const navbarRef = useRef(null);
 
   useEffect(() => {
-    setTreeData(data);
-
-    const handleResize = () => {
-      if (window.innerWidth > 425) {
-        setIsNavbarOpen(true);
-      } else {
-        setIsNavbarOpen(false);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    axios
+      .get(API_URL)
+      .then((response) => {
+        if (response.data && response.data.tree) {
+          setTreeData(response.data.tree); // ✅ Extract 'tree' from response
+        } else {
+          console.error("Invalid API response:", response.data);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
   }, []);
 
   const handleToggle = (label) => {
@@ -56,7 +57,7 @@ const TreeView = () => {
           </span>
         )}
         <span
-          className={` ${expandedNodes[nodes.label] ? "bold" : ""}`}
+          className={`${expandedNodes[nodes.label] ? "bold" : ""}`}
           onDoubleClick={() => handleDoubleClick(nodes.label)}
         >
           {nodes.label}
@@ -86,7 +87,11 @@ const TreeView = () => {
         className={`left-navbar ${isNavbarOpen ? "open" : "closed"}`}
         ref={navbarRef}
       >
-        {treeData.map((node) => renderTree(node))}
+        {treeData.length > 0 ? (
+          treeData.map((node) => renderTree(node))
+        ) : (
+          <p>Loading data...</p>
+        )}
       </div>
 
       <div className="content">

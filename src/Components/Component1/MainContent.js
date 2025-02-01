@@ -1,11 +1,36 @@
-import React from "react";
-import jsonData from "../MainViewContent.json";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import "./Component1.css";
 
+const API_URL = "http://localhost:5257/api/data";
+
 function MainContent() {
+  const [section1, setSection1] = useState(null);
+  const [section2, setSection2] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get(API_URL)
+      .then((response) => {
+        if (response.data && response.data.section1 && response.data.section2) {
+          console.log("Setting Section1:", response.data.section1);
+          console.log("Setting Section2:", response.data.section2);
+          setSection1(response.data.section1);
+          setSection2(response.data.section2);
+        } else {
+          console.error(
+            "❌ Missing Section1 or Section2! API Response:",
+            response.data
+          );
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching sections:", error);
+      });
+  }, []);
+
   const renderField = (field, index, isFirstInSection = false) => {
     if (isFirstInSection && field.label && Object.keys(field).length === 1) {
-      // If first field in a section is a single label, render as heading
       return (
         <h3 key={index} className="section-heading">
           {field.label}
@@ -14,7 +39,6 @@ function MainContent() {
     }
 
     if (!isFirstInSection && field.label && Object.keys(field).length === 1) {
-      // If it's not the first item but has only a label, display as normal text without a container
       return (
         <p key={index} className="inline-label">
           {field.label}
@@ -90,11 +114,11 @@ function MainContent() {
     <div className="container">
       <div className="content-container">
         <div className="left-section">
-          {jsonData.Section1 && renderSection(jsonData.Section1)}
+          {section1 ? renderSection(section1) : <p>Loading Section 1...</p>}
         </div>
 
         <div className="right-section">
-          {jsonData.Section2 && renderSection(jsonData.Section2)}
+          {section2 ? renderSection(section2) : <p>Loading Section 2...</p>}
         </div>
       </div>
     </div>
