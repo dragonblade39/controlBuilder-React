@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./Component1.css";
 import MainContent from "./MainContent";
+import SystemTime from "./SystemTime";
 
 const API_URL = "http://localhost:5257/api/data"; // Ensure this matches your .NET backend URL
 
@@ -64,6 +65,11 @@ function Component1() {
       {selectedOption === "Main" && (
         <div className="content-container">
           <MainContent />
+        </div>
+      )}
+      {selectedOption === "System Time" && (
+        <div className="content-container">
+          <SystemTime />
         </div>
       )}
     </div>
