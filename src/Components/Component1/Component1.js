@@ -4,13 +4,13 @@ import "./Component1.css";
 import MainContent from "./MainContent";
 import SystemTime from "./SystemTime";
 
-const API_URL = "http://localhost:5257/api/data"; // Ensure this matches your .NET backend URL
+const API_URL = "http://localhost:5257/api/data";
 
 function Component1() {
   const [options, setOptions] = useState([]);
   const [isOptionsVisible, setIsOptionsVisible] = useState(true);
   const [hoveredOption, setHoveredOption] = useState(null);
-  const [selectedOption, setSelectedOption] = useState("Main"); // Default to "Main"
+  const [selectedOption, setSelectedOption] = useState("Main");
 
   useEffect(() => {
     const fetchOptions = async () => {
@@ -23,6 +23,18 @@ function Component1() {
       }
     };
     fetchOptions();
+  }, []);
+
+  // Listen to window resize and restore navbar if screen size is large
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setIsOptionsVisible(true);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const toggleOptions = () => {
@@ -61,7 +73,6 @@ function Component1() {
         )}
       </div>
 
-      {/* Conditionally render content only if selected option is NOT "Main" */}
       {selectedOption === "Main" && (
         <div className="content-container">
           <MainContent />

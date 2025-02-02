@@ -18,12 +18,13 @@ const TreeView = () => {
   const [isNavbarOpen, setIsNavbarOpen] = useState(window.innerWidth > 425);
   const navbarRef = useRef(null);
 
+  // Fetch data from API
   useEffect(() => {
     axios
       .get(API_URL)
       .then((response) => {
         if (response.data && response.data.tree) {
-          setTreeData(response.data.tree); // ✅ Extract 'tree' from response
+          setTreeData(response.data.tree);
         } else {
           console.error("Invalid API response:", response.data);
         }
@@ -33,6 +34,19 @@ const TreeView = () => {
       });
   }, []);
 
+  // Auto-open navbar when resizing to large screens
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setIsNavbarOpen(true);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Handle expand/collapse of nodes
   const handleToggle = (label) => {
     setExpandedNodes((prev) => ({
       ...prev,
@@ -44,6 +58,7 @@ const TreeView = () => {
     setSelectedNode(label);
   };
 
+  // Recursive function to render the tree
   const renderTree = (nodes, level = 0) => (
     <div key={nodes.label} className={`tree-node level-${level}`}>
       <div className="node-header node-label">
@@ -73,6 +88,7 @@ const TreeView = () => {
 
   return (
     <div>
+      {/* Toggle Button */}
       <button
         className="navbar-toggle"
         onClick={() => setIsNavbarOpen(!isNavbarOpen)}
@@ -83,6 +99,8 @@ const TreeView = () => {
           <i className="bi bi-arrow-right-circle"></i>
         )}
       </button>
+
+      {/* Sidebar Navigation */}
       <div
         className={`left-navbar ${isNavbarOpen ? "open" : "closed"}`}
         ref={navbarRef}
@@ -94,6 +112,7 @@ const TreeView = () => {
         )}
       </div>
 
+      {/* Main Content */}
       <div className="content">
         {selectedNode === "C300_262" && (
           <Component1 content="Content for C300_262" />
