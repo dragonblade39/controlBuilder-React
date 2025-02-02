@@ -5,7 +5,9 @@ import "./Component1.css";
 const API_URL = "http://localhost:5257/api/data";
 
 function SystemTime() {
+  // eslint-disable-next-line
   const [section1, setSection1] = useState(null);
+  // eslint-disable-next-line
   const [section2, setSection2] = useState(null);
 
   useEffect(() => {
@@ -64,7 +66,8 @@ function SystemTime() {
         )}
         {field.type === "checkbox" && (
           <label>
-            <input type="checkbox" /> {field.optionLabel || ""}
+            <input type="checkbox" disabled={field.disabled} />{" "}
+            {field.optionLabel || ""}
           </label>
         )}
         {field.type === "button" && (
@@ -77,6 +80,7 @@ function SystemTime() {
     );
   };
 
+  // eslint-disable-next-line
   const renderSection = (sectionData) =>
     Object.keys(sectionData).map((key, index) => {
       const item = sectionData[key];

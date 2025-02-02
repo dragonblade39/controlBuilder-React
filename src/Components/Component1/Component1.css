@@ -252,3 +252,39 @@ h2 {
 .action-button:hover {
   background-color: #0056b3;
 }
+
+/* Fully Stretched Sticky Footer */
+.sticky-footer {
+  position: fixed;
+  bottom: 20px; /* Adjusted to give slight spacing from bottom */
+  right: 20px; /* Aligns to the bottom-right corner */
+  display: flex;
+  gap: 10px; /* Spacing between buttons */
+}
+
+/* Modern Button Styling */
+.footer-button {
+  padding: 12px 25px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  border-radius: 25px; /* More rounded for modern look */
+  background: linear-gradient(135deg, #007bff, #0056b3); /* Gradient effect */
+  color: white;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Hover Effect */
+.footer-button:hover {
+  background: linear-gradient(135deg, #0056b3, #004080); /* Darker on hover */
+  transform: translateY(-2px); /* Slight lift */
+  box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.3);
+}
+
+/* Active Click Effect */
+.footer-button:active {
+  transform: translateY(1px);
+  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+}
